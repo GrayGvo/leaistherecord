@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE LEA WELLHEAD RECORDS</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Baskerville:ital@1&display=swap');
 
@@ -16,7 +17,7 @@
             min-height: 100vh;
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
+            overflow: hidden !important;
         }
 
         .main-container {
@@ -315,7 +316,16 @@
             transform: scale(0);
             animation: ripple 0.6s linear;
         }
-        @keyframes titleRipple {
+        #canvasContainer {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    backdrop-filter: blur(0); /* 添加这行 */
+    background: transparent; /* 添加这行 */
+}
+@keyframes titleRipple {
     0% {
         transform: scale(1);
         opacity: 1;
@@ -328,6 +338,16 @@
         transform: scale(1);
         opacity: 1;
     }
+}
+
+#timeText {
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+#timeText.animate {
+    animation: titleRipple 0.5s ease-out;
+}
 }
 
 #timeText {
@@ -419,7 +439,9 @@
         </nav>
 
         <!-- Main Content -->
-        <main class="center-content"></main>
+        <main class="center-content">
+            <div id="canvasContainer"></div>
+        </main>
 
         <!-- Right Navigation - Empty -->
         <nav class="right-nav"></nav>
@@ -431,58 +453,219 @@
     </div>
 
     <script>
+        let myCanvas;
+     
+        function setup() {
+    const size = Math.min(windowHeight * 0.7, 600);
+    myCanvas = createCanvas(size, size);
+    myCanvas.parent('canvasContainer');
+    noStroke();
+    clear();
+}
+     
+        function draw() {
+            // draw 函数保持不变
+        }
+        function drawAll() {
+    clear();
+    fill(74, 144, 226);
+    for (let i = 0; i < 300; i++) {
+        // 随机位置
+        let x = random(width * 0.1, width * 0.9); // 留出10%边距
+        let y = random(height * 0.1, height * 0.9);
+        // 随机大小（2-5像素之间）
+        let size = random(2, 5);
+        ellipse(x, y, size, size);
+    }
+}
+        function drawFlat() {
+            clear(); 
+            fill(74, 144, 226);
+            let w = width * 0.8;
+            let h = height * 0.5;
+            let startX = width * 0.1;
+            let startY = height * 0.25;
+            let spacing = h / 2;
+            for (let j = 0; j < 3; j++) {
+                for (let i = 0; i < 100; i++) {
+                    let x = startX + (w / 99) * i;
+                    let y = startY + j * spacing;
+                    ellipse(x, y, 3, 3);
+                }
+            }
+        }
+     
+        function drawRippled() {
+            clear(); 
+            fill(74, 144, 226);
+            let centerX = width / 2;
+            let centerY = height / 2;
+            let radii = [width * 0.02, width * 0.2, width * 0.4];
+            for (let j = 0; j < 3; j++) {
+                let r = radii[j];
+                for (let i = 0; i < 100; i++) {
+                    let angle = TWO_PI * (i / 100);
+                    let x = centerX + r * cos(angle);
+                    let y = centerY + r * sin(angle);
+                    ellipse(x, y, 3, 3);
+                }
+            }
+        }
+     
+        function drawWavy() {
+            clear(); 
+            fill(74, 144, 226);
+            let w = width * 0.8;
+            let h = height * 0.5;
+            let startX = width * 0.1;
+            let startY = height * 0.25;
+            let spacing = h / 2;
+            for (let j = 0; j < 3; j++) {
+                for (let i = 0; i < 100; i++) {
+                    let x = startX + (w / 99) * i;
+                    let y = startY + j * spacing - 25 * cos(i * 0.125);
+                    ellipse(x, y, 3, 3);
+                }
+            }
+        }
+     
+        function drawChoppy() {
+            clear(); 
+            fill(74, 144, 226);
+            let w = width * 0.8;
+            let h = height * 0.5;
+            let startX = width * 0.1;
+            let startY = height * 0.25;
+            let spacing = h / 2;
+            for (let j = 0; j < 3; j++) {
+                for (let i = 0; i < 100; i++) {
+                    let x = startX + (w / 99) * i;
+                    let y = startY + j * spacing;
+                    if (i % 50 < 25) {
+                        y -= (i % 25) * 2;
+                    } else {
+                        y -= (25 - (i % 25)) * 2;
+                    }
+                    ellipse(x, y, 3, 3);
+                }
+            }
+        }
+     
+        function drawFoamy() {
+            clear(); 
+            fill(74, 144, 226);
+            let r = width * 0.2;
+            let centers = [width * 0.25, width * 0.5, width * 0.75];
+            for (let c of centers) {
+                for (let i = 0; i < 100; i++) {
+                    let angle = TWO_PI * (i / 100);
+                    let x = c + r * cos(angle);
+                    let y = height / 2 + r * sin(angle);
+                    ellipse(x, y, 3, 3);
+                }
+            }
+        }
+     
+        function drawTurbulent() {
+            clear(); 
+            fill(74, 144, 226);
+            let centerX = width * 0.5;
+            let centerY = height * 0.5;
+            for (let i = 0; i < 300; i++) {
+                let angle = 45 + i * 0.05;
+                let radius = (i / 300) * (height * 0.45);
+                let x = centerX + radius * sin(angle);
+                let y = centerY + radius * cos(angle);
+                ellipse(x, y, 3, 3);
+            }
+        }
+     
         const progressBarContainer = document.getElementById('progressBarContainer');
         const progressBar = document.getElementById('progressBar');
         const timeText = document.getElementById('timeText');
-
-        // Update progress bar and time text based on click position
+     
         progressBarContainer.addEventListener('click', (event) => {
-            const rect = progressBarContainer.getBoundingClientRect();
-            const clickX = event.clientX - rect.left;
-            const progress = (clickX / rect.width) * 100;
+    const rect = progressBarContainer.getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
+    const progress = (clickX / rect.width) * 100;
 
-            // Update progress bar width
-            progressBar.style.width = `${progress}%`;
+    progressBar.style.width = `${progress}%`;
 
-            // Update time text based on progress
-            if (progress <= 25) {
-                timeText.textContent = 'This Season';
-            } else if (progress <= 50) {
-                timeText.textContent = 'Last 6 Months';
-            } else {
-                timeText.textContent = 'Last 12 Months';
-            }
+    let newText;
+    if (progress <= 25) {
+        newText = 'This Season';
+    } else if (progress <= 50) {
+        newText = 'Last 6 Months';
+    } else {
+        newText = 'Last 12 Months';
+    }
 
-            // Create ripple effect
-            const ripple = document.createElement('div');
-            ripple.classList.add('ripple-effect');
-            ripple.style.left = `${clickX}px`;
-            ripple.style.top = '50%';
-            progressBarContainer.appendChild(ripple);
-
-            // Remove ripple after animation
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
-        });
-
-        // Function to set active state for navigation items
-        function setActive(clickedItem, navClass) {
-            const items = document.querySelector('.' + navClass).getElementsByClassName('nav-item');
-            for (let item of items) {
-                item.classList.remove('active');
-            }
-            clickedItem.classList.add('active');
-        }
+    // 如果文字发生改变，添加动画效果
+    if (timeText.textContent !== newText) {
+        // 移除现有的动画类
+        timeText.classList.remove('animate');
+        // 强制重绘
+        void timeText.offsetWidth;
+        // 添加新的动画类
         timeText.classList.add('animate');
-setTimeout(() => {
-    timeText.classList.remove('animate');
-}, 500);
-    </script>
-</body>
+        // 更新文字内容
+        timeText.textContent = newText;
+    }
 
-</html>
+    // 进度条波纹效果
+    const ripple = document.createElement('div');
+    ripple.classList.add('ripple-effect');
+    ripple.style.left = `${clickX}px`;
+    ripple.style.top = '50%';
+    progressBarContainer.appendChild(ripple);
 
+    setTimeout(() => {
+        ripple.remove();
+    }, 600);
+
+});
+        function setActive(clickedItem, navClass) {
+    const items = document.querySelector('.' + navClass).getElementsByClassName('nav-item');
+    for (let item of items) {
+        item.classList.remove('active');
+    }
+    clickedItem.classList.add('active');
+    
+    const buttonText = clickedItem.textContent;
+    switch(buttonText) {
+        case 'All':
+            drawAll();
+            break;
+        case 'Flat':
+            drawFlat();
+            break;
+        case 'Rippled':
+            drawRippled();
+            break;
+        case 'Wavy':
+            drawWavy();
+            break;
+        case 'Choppy':
+            drawChoppy();
+            break;
+        case 'Foamy':
+            drawFoamy();
+            break;
+        case 'Turbulent':
+            drawTurbulent();
+            break;
+    }
+}
+        timeText.classList.add('animate');
+        setTimeout(() => {
+            timeText.classList.remove('animate');
+        }, 500);
+
+        function windowResized() {
+    const size = Math.min(windowHeight * 0.7, 600);
+    resizeCanvas(size, size);
+}
+     </script>
 </body>
 
 </html>
