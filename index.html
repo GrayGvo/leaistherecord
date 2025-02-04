@@ -12,7 +12,7 @@
 
         body {
             font-family: 'Helvetica Neue', sans-serif;
-            background: #a5c5ea;
+            background: #d6dce2;
             color: #ffffff;
             min-height: 100vh;
             margin: 0;
@@ -38,7 +38,7 @@
         .gradient-title {
             font-weight: 700;
             letter-spacing: 0.2em;
-            background: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, #4A90E2 100%);
+            background: linear-gradient(to right, rgba(255, 255, 255, 1) 15%, #4A90E2 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -55,7 +55,7 @@
 
         .white-overlay .white-text {
             color: white;
-            text-shadow: 0 0 10px rgba(74, 144, 226, 0.8);
+            text-shadow: 0 0 4px rgba(74, 144, 226, 0.8);
             position: relative;
             z-index: 3;
         }
@@ -229,7 +229,7 @@
         }
 
         .footer a:hover::after {
-            color:#4A90E2;
+            color: #4A90E2;
             opacity: 1;
         }
 
@@ -316,48 +316,55 @@
             transform: scale(0);
             animation: ripple 0.6s linear;
         }
+
         #canvasContainer {
     position: absolute;
     top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 10;
-    backdrop-filter: blur(0); /* 添加这行 */
-    background: transparent; /* 添加这行 */
-}
-@keyframes titleRipple {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.1);
-        opacity: 0.7;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+    backdrop-filter: blur(0);
+    background: transparent;
+    width: auto;
+    height: auto;
 }
 
-#timeText {
-    display: inline-block;
-    transition: all 0.3s ease;
-}
+        @keyframes titleRipple {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
 
-#timeText.animate {
-    animation: titleRipple 0.5s ease-out;
-}
-}
+            50% {
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
 
-#timeText {
-    display: inline-block;
-    transition: all 0.3s ease;
-}
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
 
-#timeText.animate {
-    animation: titleRipple 0.5s ease-out;
-}
+        #timeText {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        #timeText.animate {
+            animation: titleRipple 0.5s ease-out;
+        }
+        }
+
+        #timeText {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        #timeText.animate {
+            animation: titleRipple 0.5s ease-out;
+        }
+
         @keyframes ripple {
             to {
                 transform: scale(4);
@@ -399,6 +406,58 @@
                 right: 10px;
             }
         }
+
+        @media (min-width: 1024px) { /* 桌面端 */
+    .title-container {
+        font-size: 1.5rem;
+    }
+    #canvasContainer {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) { /* 平板端 */
+    .title-container {
+        font-size: 1.2rem;
+    }
+    #canvasContainer {
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    .footer {
+        font-size: 1.2rem;
+    }
+}
+
+@media (min-width: 480px) and (max-width: 767px) { /* 大手机 */
+    .title-container {
+        font-size: 1rem;
+        left: 20px;
+    }
+    #canvasContainer {
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    .footer {
+        font-size: 1rem;
+        right: 20px;
+    }
+}
+
+@media (max-width: 479px) { /* 小手机 */
+    .title-container {
+        font-size: 0.8rem;
+        left: 15px;
+    }
+    #canvasContainer {
+        transform: translate(-50%, -50%) scale(0.7);
+    }
+    .footer {
+        font-size: 0.9rem;
+        right: 15px;
+    }
+    .nav-item {
+        margin: 15px 0;
+    }
+}
     </style>
 </head>
 
@@ -454,49 +513,64 @@
 
     <script>
         let myCanvas;
-     
+
         function setup() {
-    const size = Math.min(windowHeight * 0.7, 600);
+    // 根据屏幕宽度和高度选择合适的尺寸
+    const screenSize = Math.min(windowWidth, windowHeight);
+    let size;
+    
+    if (windowWidth >= 1024) {
+        size = Math.min(screenSize * 0.6, 600); // 桌面端
+    } else if (windowWidth >= 768) {
+        size = screenSize * 0.5; // 平板端
+    } else if (windowWidth >= 480) {
+        size = screenSize * 0.7; // 大手机
+    } else {
+        size = screenSize * 0.8; // 小手机
+    }
+    
     myCanvas = createCanvas(size, size);
     myCanvas.parent('canvasContainer');
     noStroke();
-    clear();
+    drawAll();
 }
-     
+
         function draw() {
-            // draw 函数保持不变
+            
         }
+
         function drawAll() {
-    clear();
-    fill(74, 144, 226);
-    for (let i = 0; i < 300; i++) {
-        // 随机位置
-        let x = random(width * 0.1, width * 0.9); // 留出10%边距
-        let y = random(height * 0.1, height * 0.9);
-        // 随机大小（2-5像素之间）
-        let size = random(2, 5);
-        ellipse(x, y, size, size);
-    }
-}
+            clear();
+            fill(74, 144, 226);
+            for (let i = 0; i < 300; i++) {
+                // 随机位置
+                let x = random(width * 0.1, width * 0.9); // 留出10%边距
+                let y = random(height * 0.1, height * 0.9);
+                let size = random(2, 5);
+                ellipse(x, y, size, size);
+            }
+        }
         function drawFlat() {
-            clear(); 
+            clear();
             fill(74, 144, 226);
             let w = width * 0.8;
             let h = height * 0.5;
             let startX = width * 0.1;
             let startY = height * 0.25;
             let spacing = h / 2;
+        
             for (let j = 0; j < 3; j++) {
                 for (let i = 0; i < 100; i++) {
                     let x = startX + (w / 99) * i;
                     let y = startY + j * spacing;
-                    ellipse(x, y, 3, 3);
+                let size = random(2, 5);
+                    ellipse(x, y, size,size );
                 }
             }
         }
-     
+
         function drawRippled() {
-            clear(); 
+            clear();
             fill(74, 144, 226);
             let centerX = width / 2;
             let centerY = height / 2;
@@ -507,13 +581,14 @@
                     let angle = TWO_PI * (i / 100);
                     let x = centerX + r * cos(angle);
                     let y = centerY + r * sin(angle);
-                    ellipse(x, y, 3, 3);
+                    let size = random(2, 5);
+                    ellipse(x, y, size,size );
                 }
             }
         }
-     
+
         function drawWavy() {
-            clear(); 
+            clear();
             fill(74, 144, 226);
             let w = width * 0.8;
             let h = height * 0.5;
@@ -524,13 +599,14 @@
                 for (let i = 0; i < 100; i++) {
                     let x = startX + (w / 99) * i;
                     let y = startY + j * spacing - 25 * cos(i * 0.125);
-                    ellipse(x, y, 3, 3);
+                    let size = random(2, 5);
+                    ellipse(x, y, size,size );
                 }
             }
         }
-     
+
         function drawChoppy() {
-            clear(); 
+            clear();
             fill(74, 144, 226);
             let w = width * 0.8;
             let h = height * 0.5;
@@ -546,13 +622,14 @@
                     } else {
                         y -= (25 - (i % 25)) * 2;
                     }
-                    ellipse(x, y, 3, 3);
+                    let size = random(2, 5);
+                    ellipse(x, y, size,size );
                 }
             }
         }
-     
+
         function drawFoamy() {
-            clear(); 
+            clear();
             fill(74, 144, 226);
             let r = width * 0.2;
             let centers = [width * 0.25, width * 0.5, width * 0.75];
@@ -561,13 +638,14 @@
                     let angle = TWO_PI * (i / 100);
                     let x = c + r * cos(angle);
                     let y = height / 2 + r * sin(angle);
-                    ellipse(x, y, 3, 3);
+                    let size = random(2, 5);
+                    ellipse(x, y, size,size );
                 }
             }
         }
-     
+
         function drawTurbulent() {
-            clear(); 
+            clear();
             fill(74, 144, 226);
             let centerX = width * 0.5;
             let centerY = height * 0.5;
@@ -576,96 +654,109 @@
                 let radius = (i / 300) * (height * 0.45);
                 let x = centerX + radius * sin(angle);
                 let y = centerY + radius * cos(angle);
-                ellipse(x, y, 3, 3);
+                let size = random(2, 5);
+                    ellipse(x, y, size,size );
             }
         }
-     
+
         const progressBarContainer = document.getElementById('progressBarContainer');
         const progressBar = document.getElementById('progressBar');
         const timeText = document.getElementById('timeText');
-     
+
         progressBarContainer.addEventListener('click', (event) => {
-    const rect = progressBarContainer.getBoundingClientRect();
-    const clickX = event.clientX - rect.left;
-    const progress = (clickX / rect.width) * 100;
+            const rect = progressBarContainer.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const progress = (clickX / rect.width) * 100;
 
-    progressBar.style.width = `${progress}%`;
+            progressBar.style.width = `${progress}%`;
 
-    let newText;
-    if (progress <= 25) {
-        newText = 'This Season';
-    } else if (progress <= 50) {
-        newText = 'Last 6 Months';
-    } else {
-        newText = 'Last 12 Months';
-    }
+            let newText;
+            if (progress <= 25) {
+                newText = 'This Season';
+            } else if (progress <= 50) {
+                newText = 'Last 6 Months';
+            } else {
+                newText = 'Last 12 Months';
+            }
 
-    // 如果文字发生改变，添加动画效果
-    if (timeText.textContent !== newText) {
-        // 移除现有的动画类
-        timeText.classList.remove('animate');
-        // 强制重绘
-        void timeText.offsetWidth;
-        // 添加新的动画类
-        timeText.classList.add('animate');
-        // 更新文字内容
-        timeText.textContent = newText;
-    }
+            // 如果文字发生改变，添加动画效果
+            if (timeText.textContent !== newText) {
+                // 移除现有的动画类
+                timeText.classList.remove('animate');
+                // 强制重绘
+                void timeText.offsetWidth;
+                // 添加新的动画类
+                timeText.classList.add('animate');
+                // 更新文字内容
+                timeText.textContent = newText;
+            }
 
-    // 进度条波纹效果
-    const ripple = document.createElement('div');
-    ripple.classList.add('ripple-effect');
-    ripple.style.left = `${clickX}px`;
-    ripple.style.top = '50%';
-    progressBarContainer.appendChild(ripple);
+            // 进度条波纹效果
+            const ripple = document.createElement('div');
+            ripple.classList.add('ripple-effect');
+            ripple.style.left = `${clickX}px`;
+            ripple.style.top = '50%';
+            progressBarContainer.appendChild(ripple);
 
-    setTimeout(() => {
-        ripple.remove();
-    }, 600);
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
 
-});
+        });
         function setActive(clickedItem, navClass) {
-    const items = document.querySelector('.' + navClass).getElementsByClassName('nav-item');
-    for (let item of items) {
-        item.classList.remove('active');
-    }
-    clickedItem.classList.add('active');
-    
-    const buttonText = clickedItem.textContent;
-    switch(buttonText) {
-        case 'All':
-            drawAll();
-            break;
-        case 'Flat':
-            drawFlat();
-            break;
-        case 'Rippled':
-            drawRippled();
-            break;
-        case 'Wavy':
-            drawWavy();
-            break;
-        case 'Choppy':
-            drawChoppy();
-            break;
-        case 'Foamy':
-            drawFoamy();
-            break;
-        case 'Turbulent':
-            drawTurbulent();
-            break;
-    }
-}
+            const items = document.querySelector('.' + navClass).getElementsByClassName('nav-item');
+            for (let item of items) {
+                item.classList.remove('active');
+            }
+            clickedItem.classList.add('active');
+
+            const buttonText = clickedItem.textContent;
+            switch (buttonText) {
+                case 'All':
+                    drawAll();
+                    break;
+                case 'Flat':
+                    drawFlat();
+                    break;
+                case 'Rippled':
+                    drawRippled();
+                    break;
+                case 'Wavy':
+                    drawWavy();
+                    break;
+                case 'Choppy':
+                    drawChoppy();
+                    break;
+                case 'Foamy':
+                    drawFoamy();
+                    break;
+                case 'Turbulent':
+                    drawTurbulent();
+                    break;
+            }
+        }
         timeText.classList.add('animate');
         setTimeout(() => {
             timeText.classList.remove('animate');
         }, 500);
 
         function windowResized() {
-    const size = Math.min(windowHeight * 0.7, 600);
+    const screenSize = Math.min(windowWidth, windowHeight);
+    let size;
+    
+    if (windowWidth >= 1024) {
+        size = Math.min(screenSize * 0.6, 600);
+    } else if (windowWidth >= 768) {
+        size = screenSize * 0.5;
+    } else if (windowWidth >= 480) {
+        size = screenSize * 0.7;
+    } else {
+        size = screenSize * 0.8;
+    }
+    
     resizeCanvas(size, size);
 }
-     </script>
+    </script>
 </body>
 
 </html>
